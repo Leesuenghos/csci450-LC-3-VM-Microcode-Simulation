@@ -14,6 +14,9 @@
 #ifndef LC3VM_H
 #define LC3VM_H
 
+#include <stdbool.h>
+#include <stdint.h>
+
 // total number of opcodes in the LC-3 architecture.
 #define NUMOPS (16)
 
@@ -31,6 +34,11 @@ enum
 {
   trp_offset = 0x20
 };
+
+// ✅ **전역 변수는 `extern "C"` 밖에 선언**
+extern uint16_t mem[];    // Memory Array
+extern uint16_t reg[];    // Register Array
+extern uint16_t PC_START; // Program Start Address
 
 enum registr
 {
@@ -54,18 +62,14 @@ enum flags
   FN = 1 << 2
 };
 
-// If we are creating tests, make all declarations extern C so can
-// work with catch2 C++ framework
-#ifdef TEST
+#ifdef __cplusplus
 extern "C" {
 #endif
 
-extern bool running;
-extern uint16_t mem[];
-extern uint16_t reg[];
-extern uint16_t PC_START;
+uint16_t mem_read(uint16_t addr);
+void mem_write(uint16_t addr, uint16_t val);
 
-// your task functions should go here
+extern bool running;
 
 void rti(uint16_t i);
 void res(uint16_t i);
@@ -79,8 +83,8 @@ void toutu16();
 void trap(uint16_t i);
 void ld_img(char* fname, uint16_t offset);
 
-#ifdef TEST
-} // end extern C for C++ test runner
+#ifdef __cplusplus
+}
 #endif
 
 #endif // LC3VM_H

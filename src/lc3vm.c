@@ -47,6 +47,11 @@ uint16_t PC_START = 0x3000;
  */
 // put your implememtation of mem_read() here below it documentation
 
+uint16_t mem_read(uint16_t addr)
+{
+  return mem[addr]; // Read values from given addresses
+}
+
 /** @brief memory write, transfer to memory
  *
  * Given a 16 bit address and a 16 bit value, store the value in our
@@ -63,6 +68,11 @@ uint16_t PC_START = 0x3000;
  *   character, or some other type of data.
  */
 // put your implememtation of mem_write() here below it documentation
+
+void mem_write(uint16_t addr, uint16_t val)
+{
+  mem[addr] = val; // Store values at given addresses
+}
 
 /** @brief sign extend bits
  *
