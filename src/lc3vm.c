@@ -172,6 +172,25 @@ void update_flags(int reg_name)
  */
 // put your implememtation of add() here below it documentation
 
+void add(uint16_t i)
+{
+  uint16_t dr = DR(i);   // Destination register
+  uint16_t sr1 = SR1(i); // Source register 1
+
+  if (FIMM(i))
+  { // Immediate mode
+    uint16_t imm5 = SEXTIMM(i);
+    reg[dr] = reg[sr1] + imm5;
+  }
+  else
+  { // Register mode
+    uint16_t sr2 = SR2(i);
+    reg[dr] = reg[sr1] + reg[sr2];
+  }
+
+  update_flags(dr);
+}
+
 /** @brief logical AND operation
  *
  * Compute the logical AND of 2 16 bit values and store the result in
@@ -193,6 +212,25 @@ void update_flags(int reg_name)
  */
 // put your implememtation of andlc() here below it documentation
 
+void andlc(uint16_t i)
+{
+  uint16_t dr = DR(i);
+  uint16_t sr1 = SR1(i);
+
+  if (FIMM(i))
+  { // Immediate mode
+    uint16_t imm5 = SEXTIMM(i);
+    reg[dr] = reg[sr1] & imm5;
+  }
+  else
+  { // Register mode
+    uint16_t sr2 = SR2(i);
+    reg[dr] = reg[sr1] & reg[sr2];
+  }
+
+  update_flags(dr);
+}
+
 /** @brief logical NOT operation
  *
  * Perform a logical NOT on the indicated source register and save the
@@ -206,6 +244,15 @@ void update_flags(int reg_name)
  *   instruction.
  */
 // put your implememtation of notlc() here below it documentation
+
+void notlc(uint16_t i)
+{
+  uint16_t dr = DR(i);
+  uint16_t sr1 = SR1(i);
+
+  reg[dr] = ~reg[sr1]; // Bitwise NOT
+  update_flags(dr);
+}
 
 /** @brief load RPC + offset
  *

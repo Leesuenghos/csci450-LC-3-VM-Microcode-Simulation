@@ -88,6 +88,11 @@ uint16_t mem_read(uint16_t addr);
 void mem_write(uint16_t addr, uint16_t val);
 void update_flags(int reg_name);
 
+// Arithmetic/Logic Operations
+void add(uint16_t i);
+void andlc(uint16_t i);
+void notlc(uint16_t i);
+
 uint16_t sign_extend(uint16_t bits, int size);
 
 extern bool running;
