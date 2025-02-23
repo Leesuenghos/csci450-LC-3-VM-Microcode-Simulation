@@ -129,6 +129,22 @@ uint16_t sign_extend(uint16_t bits, int size)
  */
 // put your implememtation of update_flags() here below it documentation
 
+void update_flags(int reg_name)
+{
+  if (reg[reg_name] == 0)
+  {
+    reg[RCND] = FZ; 
+  }
+  else if (reg[reg_name] & 0x8000)
+  {                
+    reg[RCND] = FN; 
+  }
+  else
+  {
+    reg[RCND] = FP; 
+  }
+}
+
 /** @brief add operation
  *
  * Add two values together and store result in destination register.
