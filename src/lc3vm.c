@@ -272,6 +272,13 @@ void notlc(uint16_t i)
  */
 // put your implememtation of ld() here below it documentation
 
+void ld(uint16_t i)
+{
+  uint16_t addr = reg[RPC] + PCOFF9(i); // Calculate memory address
+  reg[DR(i)] = mem_read(addr);          // Read from memory and store in destination register
+  update_flags(DR(i));                  // Update condition flags
+}
+
 /** @brief load indirect
  *
  * Load a value from memory using indirect addressing.  The same
@@ -289,6 +296,14 @@ void notlc(uint16_t i)
  */
 // put your implememtation of ldi() here below it documentation
 
+void ldi(uint16_t i)
+{
+  uint16_t addr = reg[RPC] + PCOFF9(i);    // First address
+  uint16_t indirect_addr = mem_read(addr); // Read indirect address
+  reg[DR(i)] = mem_read(indirect_addr);    // Read value from indirect address
+  update_flags(DR(i));                     // Update condition flags
+}
+
 /** @brief load base + relative offset
  * 
  * This instruction uses SR1 as a base address.  The value in this register is
@@ -304,6 +319,13 @@ void notlc(uint16_t i)
  *   second source register or the immediate value encoded in the
  */
 // put your implememtation of ldr() here below it documentation
+
+void ldr(uint16_t i)
+{
+  uint16_t addr = reg[SR1(i)] + OFF6(i); // Calculate address from base register + offset
+  reg[DR(i)] = mem_read(addr);           // Read from memory
+  update_flags(DR(i));                   // Update condition flags
+}
 
 /** @brief load effective address
  *
@@ -321,6 +343,11 @@ void notlc(uint16_t i)
  *   second source register or the immediate value encoded in the
  */
 // put your implememtation of lea() here below it documentation
+
+void lea(uint16_t i)
+{
+  reg[DR(i)] = reg[RPC] + PCOFF9(i); // Calculate address and store in register
+}
 
 /** @brief store to PC + offset
  *

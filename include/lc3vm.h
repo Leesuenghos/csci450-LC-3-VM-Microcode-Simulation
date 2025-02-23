@@ -88,6 +88,11 @@ uint16_t mem_read(uint16_t addr);
 void mem_write(uint16_t addr, uint16_t val);
 void update_flags(int reg_name);
 
+void ld(uint16_t i);
+void ldi(uint16_t i);
+void ldr(uint16_t i);
+void lea(uint16_t i);
+
 // Arithmetic/Logic Operations
 void add(uint16_t i);
 void andlc(uint16_t i);
