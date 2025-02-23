@@ -99,6 +99,21 @@ void mem_write(uint16_t addr, uint16_t val)
  */
 // put your implememtation of sign_extend() here below it documentation
 
+uint16_t sign_extend(uint16_t bits, int size)
+{
+  // Check if the sign bit is set (1)
+  if (bits & (1 << (size - 1)))
+  {
+    // If negative, extend sign by filling upper bits with 1s
+    return bits | (0xFFFF << size);
+  }
+  else
+  {
+    // If positive, return unchanged
+    return bits & ((1 << size) - 1); // Ensure upper bits are 0
+  }
+}
+
 /** @brief update condition register flags
  *
  * Given a destination register that was just modified by an LC-3 operation,
