@@ -27,6 +27,24 @@
 #define FL(i) (((i) >> 11) & 1)
 #define TRP(i) ((i) & 0xFF)
 
+// Extract opcode (first 4 bits)
+#define OPC(i) ((i) >> 12)
+
+// Extract destination register (bits 11-9)
+#define DR(i) (((i) >> 9) & 0x7)
+
+// Extract source register 1 (bits 8-6)
+#define SR1(i) (((i) >> 6) & 0x7)
+
+// Extract source register 2 (bits 2-0)
+#define SR2(i) ((i) & 0x7)
+
+// Extract and sign-extend immediate values
+#define SEXTIMM(i) (sign_extend((i) & 0x1F, 5))   // imm5
+#define OFF6(i) (sign_extend((i) & 0x3F, 6))      // offset6
+#define PCOFF9(i) (sign_extend((i) & 0x1FF, 9))   // PCoffset9
+#define PCOFF11(i) (sign_extend((i) & 0x7FF, 11)) // PCoffset11
+
 typedef void (*op_ex_f)(uint16_t i);
 typedef void (*trp_ex_f)();
 
