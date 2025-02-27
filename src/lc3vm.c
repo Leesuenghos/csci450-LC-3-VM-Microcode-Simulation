@@ -579,7 +579,19 @@ void tin()
  * LC-3 memory.  And correspondingly here have routines that expect
  * 2 ASCII characters per word and displays them accordingly.
  */
-void tputsp() { /* Not Implemented */ }
+void tputsp()
+{
+  uint16_t* str = mem + reg[R0]; 
+  while (*str)
+  {
+    putchar((char)(*str & 0xFF)); 
+    if ((*str >> 8) & 0xFF)
+    {
+      putchar((char)((*str >> 8) & 0xFF)); 
+    }
+    str++; 
+  }
+}
 
 /** @brief halt system service routine
  *
@@ -620,7 +632,10 @@ void toutu16()
  * Trap service routine function pointer array.  Routines are indexed from 0
  * to 7 currently for the 8 service routines.
  */
-trp_ex_f trp_ex[8] = { tgetc, tout, tputs, tin, tputsp, thalt, tinu16, toutu16 };
+
+#define TRAP_COUNT 8 
+
+trp_ex_f trp_ex[TRAP_COUNT] = {tgetc, tout, tputs, tin, tputsp, thalt, tinu16, toutu16};
 
 /** @brief trap instruction
  *
@@ -636,7 +651,17 @@ trp_ex_f trp_ex[8] = { tgetc, tout, tputs, tin, tputsp, thalt, tinu16, toutu16 }
  */
 void trap(uint16_t i)
 {
-  trp_ex[TRP(i) - trp_offset]();
+  uint16_t trap_index = TRP(i) - trp_offset; 
+
+  if (trap_index < sizeof(trp_ex) / sizeof(trp_ex[0]) && trp_ex[trap_index])
+  {
+    trp_ex[trap_index](); 
+  }
+  else
+  {
+    fprintf(stderr, "Invalid TRAP vector: 0x%X\n", TRP(i));
+    exit(1); 
+  }
 }
 
 /**
@@ -684,15 +709,24 @@ void trap(uint16_t i)
  *   the load location can be offset by a signed 16-bit offset value here.
  *   If this value is 0, programs are loaded to 0x3000 by default.
  */
-void ld_img(char *fname, uint16_t offset)
+void ld_img(char* fname, uint16_t offset)
 {
-  FILE *in = fopen(fname, "rb");
-  if (NULL==in)
+  FILE* in = fopen(fname, "rb");
+  if (NULL == in)
   {
     fprintf(stderr, "Cannot open file %s.\n", fname);
-    exit(1);    
+    exit(1);
   }
-  uint16_t *p = mem + PC_START + offset;
-  fread(p, sizeof(uint16_t), (UINT16_MAX-PC_START), in);
+
+  uint16_t* p = mem + PC_START + offset;
+  size_t read_count;
+
+  while ((read_count = fread(p, sizeof(uint16_t), 1, in)) > 0)
+  {
+   
+    *p = (*p >> 8) | (*p << 8);
+    p++;
+  }
+
   fclose(in);
 }

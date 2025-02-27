@@ -88,6 +88,8 @@ uint16_t mem_read(uint16_t addr);
 void mem_write(uint16_t addr, uint16_t val);
 void update_flags(int reg_name);
 
+void trap(uint16_t i);
+
 void jmp(uint16_t i);
 void br(uint16_t i);
 void jsr(uint16_t i);
