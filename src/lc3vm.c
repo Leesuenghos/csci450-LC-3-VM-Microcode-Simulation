@@ -427,6 +427,11 @@ void str(uint16_t i)
  */
 // put your implememtation of jmp() here below its documentation
 
+void jmp(uint16_t i)
+{
+  reg[RPC] = reg[SR1(i)]; // Load jump target address from SR1 into RPC
+}
+
 /** @brief conditional branch
  *
  * Perform a conditional branch.  First we extract the
@@ -445,6 +450,14 @@ void str(uint16_t i)
  */
 // put your implememtation of br() here below its documentation
 
+void br(uint16_t i)
+{
+  if (reg[RCND] & DR(i))
+  { // If the condition flag matches, perform branch
+    reg[RPC] += PCOFF9(i);
+  }
+}
+
 /** @brief jump to/from subtroutine
  *
  * This microcode handles both jump into a subroutine and return
@@ -457,6 +470,20 @@ void str(uint16_t i)
  *   second source register or the immediate value encoded in the
  */
 // put your implememtation of jsr() here below its documentation
+
+void jsr(uint16_t i)
+{
+  reg[R7] = reg[RPC]; // Save current RPC in R7 (return address)
+
+  if (FL(i))
+  {
+    reg[RPC] += PCOFF11(i); // Jump to subroutine relative to RPC
+  }
+  else
+  {
+    reg[RPC] = reg[SR1(i)]; // Jump to subroutine using register address
+  }
+}
 
 /** @brief return from interrupt
  *
