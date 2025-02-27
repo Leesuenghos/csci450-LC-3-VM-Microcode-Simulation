@@ -675,6 +675,26 @@ void trap(uint16_t i)
 // you need to declare the operator execution lookup table here.  This will be an
 // array of function pointers to your opcode microcode execution functions.
 
+// Function pointer table for opcode execution
+// Define function pointer array for opcode execution
+op_ex_f op_ex_table[NUMOPS] = {
+  br,    // Opcode 0000: Conditional Branch
+  add,   // Opcode 0001: Add
+  ld,    // Opcode 0010: Load
+  st,    // Opcode 0011: Store
+  jsr,   // Opcode 0100: Jump to Subroutine
+  andlc, // Opcode 0101: Bitwise AND
+  ldr,   // Opcode 0110: Load Base + Offset
+  str,   // Opcode 0111: Store Base + Offset
+  rti,   // Opcode 1000: (Not used)
+  notlc, // Opcode 1001: Bitwise NOT
+  ldi,   // Opcode 1010: Load Indirect
+  sti,   // Opcode 1011: Store Indirect
+  jmp,   // Opcode 1100: Unconditional Jump
+  res,   // Opcode 1101: Reserved (Not used)
+  lea,   // Opcode 1110: Load Effective Address
+  trap   // Opcode 1111: Trap Routine
+};
 
 /** @brief start/run LC-3 simulator
  *
@@ -692,6 +712,33 @@ void trap(uint16_t i)
  *   in this routine.
  */
 // put your implememtation of start() here below its documentation
+
+void start(uint16_t offset)
+{
+  // Set starting program counter
+  reg[RPC] = PC_START + offset;
+
+  // Main Fetch-Decode-Execute loop
+  while (running)
+  {
+    uint16_t instr = mem_read(reg[RPC]); // Fetch instruction
+    reg[RPC]++;                          // Increment PC before execution
+
+    uint16_t opcode = OPC(instr); // Decode opcode
+
+    if (opcode < NUMOPS)
+    {
+      // Execute corresponding instruction from table
+      op_ex_table[opcode](instr);
+    }
+    else
+    {
+      // Invalid opcode (Should not happen in valid LC-3 programs)
+      printf("ERROR: Invalid opcode %X at PC %X\n", opcode, reg[RPC]);
+      running = false;
+    }
+  }
+}
 
 /** @brief load an LC-3 machine instruction image
  *
