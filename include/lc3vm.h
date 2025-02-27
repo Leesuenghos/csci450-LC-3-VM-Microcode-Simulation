@@ -88,6 +88,10 @@ uint16_t mem_read(uint16_t addr);
 void mem_write(uint16_t addr, uint16_t val);
 void update_flags(int reg_name);
 
+void st(uint16_t i);
+void sti(uint16_t i);
+void str(uint16_t i);
+
 void ld(uint16_t i);
 void ldi(uint16_t i);
 void ldr(uint16_t i);
